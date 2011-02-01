@@ -21,8 +21,6 @@ class Parser
 
   TAG_PATTERN = /((#{SLIDE_NUMBER_PATTERN})(#{COMMANDS_PATTERN})(#{DIRECTION_PATTERN}))/.freeze
 
-  JAVA_TAG_PATTERN = /#{Regexp.escape('/*')}\s*#{TAG_PATTERN}\s*#{Regexp.escape('*/')}/
-
 
   def initialize text
     @text = clean_up_text(text)
@@ -40,7 +38,7 @@ class Parser
       line_number += 1
       work_line = line
       loop do
-        match = JAVA_TAG_PATTERN.match(work_line)
+        match = tag_pattern.match(work_line)
         break if match.nil?
         work_line = match.post_match
 
@@ -59,11 +57,7 @@ class Parser
       tag_item.add_child(create_text_item("\n"))
     end
 
-    tag_item.formattable_texts([]).each do |ft|
-       if ft.on_slide(tag_item.max_slide_number)
-         p [ft.text, ft.formattings_for_slide(tag_item.max_slide_number)]
-       end
-    end
+    return tag_item.max_slide_number, tag_item.formattable_texts([])
   end
 
   private
