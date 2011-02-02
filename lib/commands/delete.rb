@@ -9,10 +9,6 @@ module Command
 
     end
 
-    def formattings actual_slide_number
-      []
-    end
-
     def prevent_insert actual_slide_number
       active?(actual_slide_number)
     end

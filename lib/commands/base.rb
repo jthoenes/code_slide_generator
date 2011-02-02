@@ -10,13 +10,16 @@ module Command
       false
     end
 
-    def formattings actual_slide_number
-      []
+    def formattings actual_slide_number, text_range
     end
 
     def prevent_insert actual_slide_number
       false
     end
+	
+	def inspect
+	  "#{self.class.name}(#{@slide_number})"
+	end
 
     protected
     def before_slide?(actual_slide_number)

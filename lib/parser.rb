@@ -22,7 +22,8 @@ class Parser
   TAG_PATTERN = /((#{SLIDE_NUMBER_PATTERN})(#{COMMANDS_PATTERN})(#{DIRECTION_PATTERN}))/.freeze
 
 
-  def initialize text
+  def initialize filename, text
+    @filename = filename
     @text = clean_up_text(text)
   end
 
@@ -39,25 +40,30 @@ class Parser
       work_line = line
       loop do
         match = tag_pattern.match(work_line)
-        break if match.nil?
+        if match.nil?
+			tag_item.add_child(create_text_item(work_line))
+			break
+		end
         work_line = match.post_match
-
-        tag_item.add_child(create_text_item(match.pre_match))
+		
+		tag_item.add_child(create_text_item(match.pre_match))
 
         if is_open? match
-          tag_item = create_tag_item(tag_item, line_number, match)
+		   tag_item = create_tag_item(tag_item, line_number, match)
         elsif is_close? match
-           tag_item = close_tag(tag_item, match)
+		   tag_item = close_tag(tag_item, match)
         else
           raise "Invalid tag in line #{line_number}"
         end
-
       end
-      tag_item.add_child(create_text_item(work_line))
-      tag_item.add_child(create_text_item("\n"))
+      tag_item.add_child(create_text_item("\n")) unless @lines.last == line
     end
-
-    return tag_item.max_slide_number, tag_item.formattable_texts([])
+	
+	unless tag_item.matching(0, Command::Start)
+		raise "#{@filename}: No end tag for slide #{tag_item.slide_number}, #{tag_item.command_type} in line #{tag_item.line_number}"
+	end
+	
+	return tag_item.max_slide_number, tag_item.formattable_texts([])
   end
 
   private
@@ -82,11 +88,12 @@ class Parser
   end
 
   def close_tag tag_item, match
+    slide_number, command = tag_info_from_match(match)
     if tag_item.matching(*tag_info_from_match(match))
       tag_item.close
-      tag_item.parent
+      return tag_item.parent
     else
-      raise "No end tag for slide #{match.slide_number}, #{match.command} in line #{match.line_number}"
+      raise "#{@filename}: No end tag for slide #{tag_item.slide_number}, #{tag_item.command_type} in line #{tag_item.line_number}"
     end
   end
 

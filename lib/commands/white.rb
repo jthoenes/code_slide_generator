@@ -11,11 +11,9 @@ module Command
 
     end
 
-    def formattings actual_slide_number
+    def formattings actual_slide_number, text_range
       if active?(actual_slide_number)
-        [:white]
-      else
-        []
+        text_range.white!
       end
     end
   end

@@ -10,12 +10,10 @@ module Command
 
     end
 
-    def formattings actual_slide_number
+    def formattings actual_slide_number, text_range
       if at_slide?(actual_slide_number)
-        [:bold]
-      else
-        []
-      end
+        text_range.bold!
+	  end
     end
 
     def prevent_insert actual_slide_number

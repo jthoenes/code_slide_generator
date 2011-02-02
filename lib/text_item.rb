@@ -13,5 +13,9 @@ class TextItem
    def max_slide_number
     0
   end
+  
+  def inspect
+    "text<#{@text}>".inspect
+  end
 
 end

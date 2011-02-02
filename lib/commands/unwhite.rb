@@ -11,15 +11,13 @@ module Command
 
     end
 
-    def formattings actual_slide_number
-      formattings = []
+    def formattings actual_slide_number, text_range
       if inactive?(actual_slide_number)
-        formattings << :white
+		text_range.white!
       end
       if at_slide?(actual_slide_number)
-        formattings << :bold
+        text_range.bold!
       end
-      formattings
     end
   end
 end
