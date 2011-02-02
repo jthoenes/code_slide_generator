@@ -72,8 +72,8 @@ code_shapes.each do |shape|
   numbers_pattern = /\[(\d+|\d+-|-\d+|\d+-\d+)\]/
   pattern = /#{INCLUDE_COMMAND}=(#{filename_pattern})(#{numbers_pattern})?$/
   
-  match = pattern.match(shape.text)
-  filepath = match[1]  
+  match = pattern.match(shape.text.strip)
+  filepath = match[1]
   
   
   raise "Input Source '#{filepath}' from Slide #{shape.slide.number} does not exists" unless File.exists?(filepath)
