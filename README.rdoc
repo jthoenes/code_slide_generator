@@ -34,13 +34,9 @@ The tags consist of three elements:
 
 === Commands
 The following commands are available
-[>] unwhite, at the slide in question and the following slides make the region visible.
-     Before it is white aka it takes the space it later needs.
-	 At the first slide the region is bold additionally.
-[<] white, inverse of unwhite.
-[+] add, at the slide in question and the following slides make add the region.
-     Before it is not visible.
-	 At the first slide the region is bold additionally.
+[>] unwhite, at the slide in question and the following slides make the region visible. Before it is white aka it takes the space it later needs. At the first slide the region is bold additionally.
+[<] white, inverse of unwhite. 
+[+] add, at the slide in question and the following slides make add the region. Before it is not visible. At the first slide the region is bold additionally.
 [-] delete, inverse of add.
 [r] red, make the region red and bold for the slide in question
 [b] bold, nake the region bold for the slide in question
