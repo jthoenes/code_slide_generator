@@ -1,4 +1,4 @@
-= PowerPoint Code Slide Generator
+﻿= PowerPoint Code Slide Generator
 
 == Description and Usage
 
@@ -8,42 +8,42 @@ This is a little ruby script for copying Sourcecode of *.xml, *.as, *.java and *
 
 To use, put the following text into a text field in powerpoint:
   
-  INCLUDE_SOURCE=/path/to/file.java
+ INCLUDE_SOURCE=/path/to/file.java
 
 Assuming the content of /path/to/file.java is
 
-  /* 1>[ */System.out.println("first in");/* 1>] */
-  /* 2r[ */System.out.println("second red");/* 2r] */
-  /* 3+[ */System.out.println("thrid add");/* 3+] */
+ /* 1>[ */System.out.println("first in");/* 1>] */
+ /* 2r[ */System.out.println("second red");/* 2r] */
+ /* 3+[ */System.out.println("thrid add");/* 3+] */
   
 an execution of ruby main.rb will do the following:
 
-  - hide the original slide
-  - add a slide at the beginning with the original source code
-  - unwhite aka. show the first line on the next slide
-  - make the second line red on the next slide
-  - add the thrid line on the next slide
+- hide the original slide
+- add a slide at the beginning with the original source code
+- unwhite aka. show the first line on the next slide
+- make the second line red on the next slide
+- add the thrid line on the next slide
 
 == Tags
   
 The tags consist of three elements:
 
-  * the number of the slide, starting with 0 where the command should appear
-  * a command
-  * the direction if this is the start or the end of the applying region
+* the number of the slide, starting with 0 where the command should appear
+* a command
+* the direction if this is the start or the end of the applying region
 
 === Commands
 The following commands are available
-  [>] unwhite, at the slide in question and the following slides make the region visible.
+[>] unwhite, at the slide in question and the following slides make the region visible.
      Before it is white aka it takes the space it later needs.
 	 At the first slide the region is bold additionally.
-  [<] white, inverse of unwhite.
-  [+] add, at the slide in question and the following slides make add the region.
+[<] white, inverse of unwhite.
+[+] add, at the slide in question and the following slides make add the region.
      Before it is not visible.
 	 At the first slide the region is bold additionally.
-  [-] delete, inverse of add.
-  [r] red, make the region red and bold for the slide in question
-  [b] bold, nake the region bold for the slide in question
+[-] delete, inverse of add.
+[r] red, make the region red and bold for the slide in question
+[b] bold, nake the region bold for the slide in question
 
 === Regions
 
@@ -51,5 +51,5 @@ A region is started by a [ and ended by ] tag. The regions can be nested, but th
   
 == License
 
-Copyright (C) 2011  Johannes Th�nes
+Copyright (C) 2011  Johannes Thönes
 Releases under Apache Software License, Version 2
