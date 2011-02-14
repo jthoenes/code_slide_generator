@@ -1,8 +1,8 @@
-﻿= PowerPoint Code Slide Generator
+﻿== PowerPoint Code Slide Generator
 
-== Description and Usage
+=== Description and Usage
 
-== Usage
+==== Usage
 
 This is a little ruby script for copying Sourcecode of *.xml, *.as, *.java and *.cs into slides.
 
@@ -24,7 +24,7 @@ an execution of ruby main.rb will do the following:
 - make the second line red on the next slide
 - add the thrid line on the next slide
 
-== Tags
+==== Tags
   
 The tags consist of three elements:
 
@@ -32,7 +32,7 @@ The tags consist of three elements:
 * a command
 * the direction if this is the start or the end of the applying region
 
-=== Commands
+==== Commands
 The following commands are available
 [>] unwhite, at the slide in question and the following slides make the region visible. Before it is white aka it takes the space it later needs. At the first slide the region is bold additionally.
 [<] white, inverse of unwhite. 
@@ -41,11 +41,11 @@ The following commands are available
 [r] red, make the region red and bold for the slide in question
 [b] bold, nake the region bold for the slide in question
 
-=== Regions
+==== Regions
 
 A region is started by a [ and ended by ] tag. The regions can be nested, but they cannot overlap each other.
   
-== License
+=== License
 
 Copyright (C) 2011  Johannes Thönes
 Releases under Apache Software License, Version 2
