@@ -18,6 +18,11 @@ require 'lib/text_item'
 require 'lib/formattable_text'
 
 require 'lib/power_point'
+require 'lib/power_point/application'
+require 'lib/power_point/presentation'
+require 'lib/power_point/slide'
+require 'lib/power_point/shape'
+require 'lib/power_point/text_range'
 
 slide_only = ARGV.first.nil? ? nil : ARGV.first.to_i
 
