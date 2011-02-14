@@ -86,8 +86,7 @@ code_shapes.each do |shape|
   end
   
   parser = case (filepath.split('.').last)
-           when 'as'
-           when 'java'
+           when 'as', 'java', 'cs'
              CodeParser.new(filepath, text)
            when 'xml'
              XMLParser.new(filepath, text)

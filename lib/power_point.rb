@@ -142,7 +142,7 @@ module PowerPoint
       unbold!
       self.font_family="Courier New"
       black!
-	  self.font_size = 15
+	  self.font_size = 20
 	end
 	
 	def font_family=(font_family)
@@ -162,7 +162,7 @@ module PowerPoint
 	end
 	
 	def black!
-	  @text_range.Font.Color.RGB = "000000".hex
+	  @text_range.Font.Color.RGB = "78635A".hex
 	end
 	
 	def white!
@@ -170,7 +170,7 @@ module PowerPoint
 	end
 	
 	def red!
-	  @text_range.Font.Color.RGB = "0000FF".hex
+	  @text_range.Font.Color.RGB = "78635A".hex
 	end
   end
 end
