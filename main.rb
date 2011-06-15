@@ -1,5 +1,6 @@
 $:.unshift File.join(File.dirname(__FILE__))
 require 'win32ole'
+require 'open-uri'
 
 require 'lib/commands/base'
 require 'lib/commands/add'
@@ -81,11 +82,9 @@ code_shapes.each do |shape|
   filepath = match[1]
   
   
-  raise "Input Source '#{filepath}' from Slide #{shape.slide.number} does not exists" unless File.exists?(filepath)
-  
   text = ""
   begin
-    text = File.read(filepath)
+    open(filepath) {|f| f.each_line {|line| text += line }}
   rescue
     raise "Cannot read Input Source '#{filepath}' from Slide #{shape.slide.number}"
   end
