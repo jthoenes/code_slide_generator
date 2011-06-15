@@ -1,6 +1,6 @@
 module PowerPoint
   class Shape
-	TEXT_FIELD_TYPE = 17.freeze
+	MSO_FALSE = 0
   
     attr_reader :slide
     attr_reader :index	
@@ -11,7 +11,7 @@ module PowerPoint
 	end
 	
 	def text_field?
-	  @shape.Type == TEXT_FIELD_TYPE
+	  @shape.TextFrame.HasText != MSO_FALSE
 	end
 	
 	def text
