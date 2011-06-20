@@ -1,18 +1,22 @@
 module PowerPoint
   class TextRange
-    def initialize text_range
-	  @text_range = text_range
+    def initialize shape, text_range
+	  @shape, @text_range = shape, text_range
 	end
 	
 	def text
-	  @text_range.text
+	  begin
+	    return @text_range.Text
+	  rescue
+	    return ""
+	  end
 	end
 	
 	def add_text text
 	  start_position = @text_range.Length+1
       @text_range.InsertAfter text
 	  
-	  TextRange.new(@text_range.Characters(start_position, text.length))
+	  TextRange.new(@shape, @text_range.Characters(start_position, text.length))
 	end
 	
 	def clear!
@@ -21,7 +25,7 @@ module PowerPoint
 	
 	def reset_format!
       unbold!
-      self.font_family="Courier New"
+      self.font_family="Droid Sans Mono"
       black!
 	  self.font_size = 15
 	end
@@ -47,11 +51,11 @@ module PowerPoint
 	end
 	
 	def white!
-	  @text_range.Font.Color.RGB = "FFFFFF".hex
+	  @text_range.Font.Color.RGB = 	@shape.background_color
 	end
 	
 	def red!
-	  @text_range.Font.Color.RGB = "0000FF".hex
+	  @text_range.Font.Color.RGB = "0000D2".hex
 	end
   end
 end

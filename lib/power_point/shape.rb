@@ -7,7 +7,6 @@ module PowerPoint
 	
     def initialize slide, index, shape
 	  @slide, @index, @shape = slide, index, shape
-	  
 	end
 	
 	def text_field?
@@ -26,12 +25,16 @@ module PowerPoint
 	  slide.presentation
 	end
 	
+	def background_color
+	  @shape.Fill.ForeColor
+	end
+	
 	def prepare!
 	  text_range.clear!
 	end
 	
 	def text_range
-	  @text_range ||= TextRange.new(@shape.TextFrame.TextRange)
+	  @text_range ||= TextRange.new(self, @shape.TextFrame.TextRange)
 	end
   end
 end
