@@ -48,27 +48,18 @@ Trollop::die :slide, "must be a positive integer" unless opts[:slide] > 0
 Trollop::die :path, "must be a valid path to a directoy" unless opts[:path].nil? || File.directory?(opts[:path])
 
 slide_only = opts[:slide]
-base_path = opts[:path]
+basepath = opts[:path]
 
-INCLUDE_COMMAND = "INCLUDE_SOURCE".freeze
 power_point = PowerPoint::Application.new
 presentation = power_point.current_presentation
 
-def calculate_range range_string, max_slide_number
-  if range_string.nil?
-    0..max_slide_number
-  elsif range_string =~ /^(\d+)-$/
-    $1.to_i..max_slide_number
-  elsif range_string =~ /^-(\d+)$/
-    0..$1.to_i
-  elsif range_string =~ /^(\d+)-(\d+)$/
-    $1.to_i..$2.to_i
-  elsif range_string =~ /^\d+$/
-    $&.to_i..$&.to_i
-  else
-    raise "Error interpreting #{range_string}"
-  end
+code_slides = presentation.code_slides
+code_slides.reject!{|slide| slide.number != slide_only} if slide_only
+
+code_slides.each do |slide|
+  #p slide.subsequent_generated_slides.each(&:delete)
 end
+
 
 if slide_only.nil?
   presentation.slides.select(&:generated?).each(&:delete)
@@ -89,7 +80,7 @@ end
 
 
 code_shapes = presentation.select_shapes do |shape|
-  shape.text_field? and shape.text.strip =~ /#{INCLUDE_COMMAND}=(.+)$/
+  shape.code_shape?
 end.map
 
 code_shapes.map(&:slide).each(&:hide!)
@@ -97,12 +88,7 @@ code_shapes.map(&:slide).each(&:hide!)
 code_shapes.each do |shape|
   next unless slide_only.nil? or shape.slide.number == slide_only
 
-  filename_pattern = /.+?/
-  numbers_pattern = /\[(\d+|\d+-|-\d+|\d+-\d+)\]/
-  pattern = /#{INCLUDE_COMMAND}=(#{filename_pattern})(#{numbers_pattern})?$/
-  
-  match = pattern.match(shape.text.strip)
-  filepath = (base_path.nil? ? match[1] : "#{base_path}/#{match[1]}").gsub('\\', '/')
+  filepath = shape.code_filepath(basepath)
   
   
   text = ""
@@ -123,7 +109,7 @@ code_shapes.each do |shape|
 		 
   max_slide_number, formattable_texts = parser.parse
 
-  slide_range = calculate_range(match[3], max_slide_number)
+  slide_range = shape.calculate_range(max_slide_number)
   
   current_slide = shape.slide
   slide_range.each do |slide_number|

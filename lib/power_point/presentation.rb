@@ -18,4 +18,10 @@ module PowerPoint
 	  all_shapes.select(&block)
 	end
   end
+  
+  class Presentation
+    def code_slides
+	  slides.select(&:code_slide?)
+	end
+  end
 end
