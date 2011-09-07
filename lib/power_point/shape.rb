@@ -96,7 +96,7 @@ module PowerPoint
 		open(filepath) {|f| f.each_line {|line| text += line }}
 		text
 	  rescue
-		raise "Cannot read Input Source '#{filepath}' from Slide #{shape.slide.number}"
+		raise "Cannot read Input Source '#{filepath}' from Slide #{slide.number}"
 	  end
 	end
 

@@ -1,4 +1,4 @@
-$:.unshift File.join(File.dirname(__FILE__))
+$:.unshift File.dirname($0)
 require 'win32ole'
 require 'open-uri'
 require 'rubygems'
@@ -29,7 +29,7 @@ require 'lib/power_point/shape'
 require 'lib/power_point/text_range'
 
 opts = Trollop::options do
-  version "Code Slide Generation 0.1.0a (c) 2011 Johannes Thönes <johannes.thoenes@cgm.com>"
+  version "Code Slide Generation 0.1.0a (c) 2011 Johannes Thoenes <johannes.thoenes@cgm.com>"
   banner <<-EOS
 A Generator for Slides containing Code in PowerPoint.
 
@@ -41,12 +41,12 @@ EOS
 
   opt :all, "generate all slides", :default => false
   opt :slide, "slide Number which should be (re-)generated", :type => :int
-  opt :path, "base path for the slides", :type => :string
+  opt :path, "base path for the slides", :type => :string, :default => ""
 end
 
 Trollop::die :slide, "please provide a --slide or use --all" unless opts[:all] || opts[:slide]
-Trollop::die :slide, "must be a positive integer" unless opts[:slide] > 0
-Trollop::die :path, "must be a valid path to a directoy" unless opts[:path].nil? || File.directory?(opts[:path])
+Trollop::die :slide, "must be a positive integer" unless opts[:slide].nil? || opts[:slide] > 0
+Trollop::die :path, "must be a valid path to a directoy" unless opts[:path].length == 0 || File.directory?(opts[:path])
 
 power_point = PowerPoint::Application.new
 presentation = power_point.current_presentation

@@ -1,0 +1,1 @@
+ocra --verbose --output code_slide_generate.exe main.rb
