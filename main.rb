@@ -1,6 +1,8 @@
 $:.unshift File.join(File.dirname(__FILE__))
 require 'win32ole'
 require 'open-uri'
+require 'rubygems'
+require 'trollop'
 
 require 'lib/commands/base'
 require 'lib/commands/add'
@@ -25,7 +27,28 @@ require 'lib/power_point/slide'
 require 'lib/power_point/shape'
 require 'lib/power_point/text_range'
 
-slide_only = ARGV.first.nil? ? nil : ARGV.first.to_i
+opts = Trollop::options do
+  version "Code Slide Generation 0.1.0a (c) 2011 Johannes Thönes <johannes.thoenes@cgm.com>"
+  banner <<-EOS
+A Generator for Slides containing Code in PowerPoint.
+
+Usage:
+	code_slide_generate [options]
+
+where [options] are:
+EOS
+
+  opt :all, "generate all slides", :default => false
+  opt :slide, "slide Number which should be (re-)generated", :type => :int
+  opt :path, "base path for the slides", :type => :string
+end
+
+Trollop::die :slide, "please provide a --slide or use --all" unless opts[:all] || opts[:slide]
+Trollop::die :slide, "must be a positive integer" unless opts[:slide] > 0
+Trollop::die :path, "must be a valid path to a directoy" unless opts[:path].nil? || File.directory?(opts[:path])
+
+slide_only = opts[:slide]
+base_path = opts[:path]
 
 INCLUDE_COMMAND = "INCLUDE_SOURCE".freeze
 power_point = PowerPoint::Application.new
@@ -79,7 +102,7 @@ code_shapes.each do |shape|
   pattern = /#{INCLUDE_COMMAND}=(#{filename_pattern})(#{numbers_pattern})?$/
   
   match = pattern.match(shape.text.strip)
-  filepath = match[1]
+  filepath = (base_path.nil? ? match[1] : "#{base_path}/#{match[1]}").gsub('\\', '/')
   
   
   text = ""
