@@ -5,7 +5,7 @@ class FormattableText
   def initialize text, commands
     @text, @commands = text, commands
   end
-
+  
   def apply slide_number, slide, shape
     if on_slide?(slide_number) 
       unless text.empty?
@@ -15,7 +15,7 @@ class FormattableText
 	  end
     end
   end
-
+  
   private
   def formattings_for_slide slide_number, text_range
      relevant_commands(slide_number).map{|cmd| cmd.formattings(slide_number, text_range)}.flatten.uniq

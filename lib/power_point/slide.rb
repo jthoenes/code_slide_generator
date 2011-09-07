@@ -62,18 +62,15 @@ module PowerPoint
 	  
 	  slide_number = self.number
 	  loop do
-	    
-	    slide_number += 1
-		slide = presentation.slides[slide_number]
+	    # slide[1].number == 2
+	    slide = presentation.slides[slide_number]
 		
 		if slide.generated?
-		  p slide_number
 		  subsequent_generated << slide
 		else
-		  p slide_number
 	      break
 	    end
-		
+		slide_number += 1
       end
 	  
 	  subsequent_generated
@@ -81,6 +78,19 @@ module PowerPoint
 	
 	def code_shapes
 	  shapes.select(&:code_shape?)
+	end
+	
+	def generate_code_slides(basepath)
+	  shape_formatters = code_shapes.map{ |shape| shape.formatter(basepath) }
+	  max_slide_index = shape_formatters.map(&:slide_count).max - 1
+	  
+	  work_slide = self
+	  (0..max_slide_index).each do |index|
+	    work_slide = work_slide.duplicate
+		work_slide.show!
+		  
+		shape_formatters.each{|fm| fm.format(index, work_slide) }
+	  end
 	end
 	
 	def to_s

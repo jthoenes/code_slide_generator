@@ -45,6 +45,19 @@ module PowerPoint
 	  text_field? and text.strip =~ /#{INCLUDE_COMMAND}=(.+)$/
 	end
 	
+	def formatter(basepath)
+	  filepath = code_filepath(basepath)
+	
+	  text = read_text(filepath)	
+	  parser = create_parser(filepath, text)
+		
+	  max_slide_number, formattable_texts = parser.parse
+		
+	  slide_range = calculate_range(max_slide_number)
+	  
+	  ShapeFormatter.new(self, formattable_texts, slide_range)
+	end
+	
 	def code_filepath basepath = ""  
       File.join(basepath, code_shape_match[1])
 	end
@@ -76,5 +89,27 @@ module PowerPoint
 	  
 	  pattern.match(text.strip)
 	end
+	public
+	def read_text filepath
+	  text = ""
+	  begin
+		open(filepath) {|f| f.each_line {|line| text += line }}
+		text
+	  rescue
+		raise "Cannot read Input Source '#{filepath}' from Slide #{shape.slide.number}"
+	  end
+	end
+
+	def create_parser filepath, text
+	  case (filepath.split('.').last)
+		when 'as', 'java', 'cs'
+		  CodeParser.new(filepath, text)
+		when 'xml'
+		  XMLParser.new(filepath, text)
+		else
+		  raise "Not valid file format for #{filepath}"
+		end
+	end
+	
   end
 end

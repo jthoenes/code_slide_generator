@@ -19,6 +19,7 @@ require 'lib/xml_parser'
 require 'lib/tag_item'
 require 'lib/text_item'
 require 'lib/formattable_text'
+require 'lib/shape_formatter'
 
 require 'lib/power_point'
 require 'lib/power_point/application'
@@ -47,78 +48,19 @@ Trollop::die :slide, "please provide a --slide or use --all" unless opts[:all] |
 Trollop::die :slide, "must be a positive integer" unless opts[:slide] > 0
 Trollop::die :path, "must be a valid path to a directoy" unless opts[:path].nil? || File.directory?(opts[:path])
 
-slide_only = opts[:slide]
-basepath = opts[:path]
-
 power_point = PowerPoint::Application.new
 presentation = power_point.current_presentation
 
 code_slides = presentation.code_slides
-code_slides.reject!{|slide| slide.number != slide_only} if slide_only
+code_slides.reject!{|slide| slide.number != opts[:slide]} if opts[:slide]
 
-code_slides.each do |slide|
-  #p slide.subsequent_generated_slides.each(&:delete)
-end
+code_slides.each{ |s| s.subsequent_generated_slides.each(&:delete) }
+code_slides.each(&:hide!)
+code_slides.each{|s| s.generate_code_slides(opts[:path])}
 
-
-if slide_only.nil?
-  presentation.slides.select(&:generated?).each(&:delete)
-else 
-  to_delete = []
-  slide_number = slide_only
-  loop do
-    slide = presentation.slides[slide_number]
-	if slide.generated?
-	  to_delete << slide
-	else
-	  break
-	end
-	slide_number += 1
-  end
-  to_delete.each(&:delete)
-end
-
-
-code_shapes = presentation.select_shapes do |shape|
-  shape.code_shape?
-end.map
-
-code_shapes.map(&:slide).each(&:hide!)
-
-code_shapes.each do |shape|
-  next unless slide_only.nil? or shape.slide.number == slide_only
-
-  filepath = shape.code_filepath(basepath)
-  
-  
-  text = ""
-  begin
-    open(filepath) {|f| f.each_line {|line| text += line }}
-  rescue
-    raise "Cannot read Input Source '#{filepath}' from Slide #{shape.slide.number}"
-  end
-  
-  parser = case (filepath.split('.').last)
-           when 'as', 'java', 'cs'
-             CodeParser.new(filepath, text)
-           when 'xml'
-             XMLParser.new(filepath, text)
-           else
-             raise "Not valid file format for #{filepath}"
-         end
-		 
-  max_slide_number, formattable_texts = parser.parse
-
-  slide_range = shape.calculate_range(max_slide_number)
-  
-  current_slide = shape.slide
-  slide_range.each do |slide_number|
-    current_slide = current_slide.duplicate
-	current_slide.show!
-	current_shape = current_slide.shapes[shape.index]
-	current_shape.prepare!
-	
-    formattable_texts.each { |ft| ft.apply(slide_number, current_slide, current_shape) }
-  end
-  shape.slide.select! unless slide_only.nil?
+# Slide selection
+if opts[:slide]
+  code_slides.first.select!
+else
+  presentation.slides.first.select!
 end
