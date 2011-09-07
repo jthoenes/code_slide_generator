@@ -25,9 +25,7 @@ module PowerPoint
 	
 	def reset_format!
       unbold!
-      self.font_family="Droid Sans Mono"
       black!
-	  #self.font_size = 15
 	end
 	
 	def font_family=(font_family)
