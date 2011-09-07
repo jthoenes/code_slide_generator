@@ -29,7 +29,7 @@ require 'lib/power_point/shape'
 require 'lib/power_point/text_range'
 
 opts = Trollop::options do
-  version "Code Slide Generation 0.1.0a (c) 2011 Johannes Thoenes <johannes.thoenes@cgm.com>"
+  version "Code Slide Generation 0.1.0 (c) 2011 Johannes Thoenes <johannes.thoenes@cgm.com>"
   banner <<-EOS
 A Generator for Slides containing Code in PowerPoint.
 
