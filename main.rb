@@ -52,7 +52,10 @@ power_point = PowerPoint::Application.new
 presentation = power_point.current_presentation
 
 code_slides = presentation.code_slides
-code_slides.reject!{|slide| slide.number != opts[:slide]} if opts[:slide]
+ if opts[:slide]
+  code_slides.reject!{|slide| slide.number != opts[:slide]}
+  Trollop::die :slide, "slide #{opts[:slide]} is not a code slide" if code_slides.empty?
+end
 
 code_slides.each{ |s| s.subsequent_generated_slides.each(&:delete) }
 code_slides.each(&:hide!)
