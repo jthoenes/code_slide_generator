@@ -121,8 +121,7 @@ formatting do
   
   toggle_formats '>', '<' do
     on do
-	  from_slide { color 0,0,255 }
-	  at_slide { bold }
+	  at_slide { bold; color 0,0,0 }
     end
     off do
       from_slide { background_color }

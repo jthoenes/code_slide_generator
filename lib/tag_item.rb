@@ -22,8 +22,7 @@ class TagItem
 
 
   def formattable_texts formattings
-    formattings.add(slide_number, @formattings)
-    @children.map{|item| item.formattable_texts(formattings)}.flatten
+    @children.map{|item| item.formattable_texts(formattings.including(slide_number, @formattings))}.flatten
   end
   
   def inspect
