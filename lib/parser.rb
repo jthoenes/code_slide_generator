@@ -2,21 +2,12 @@ class Parser
 
   TAB_WIDTH = 2
 
-  COMMANDS = {
-      'r' => Command::Red,
-      'b' => Command::Bold,
-      '<' => Command::White,
-      '>' => Command::Unwhite,
-      '+' => Command::Add,
-      '-' => Command::Delete
-  }.freeze
-
   OPEN = "["
   CLOSE = "]"
   DIRECTIONS = [OPEN, CLOSE].freeze
 
   SLIDE_NUMBER_PATTERN = /\d+/
-  COMMANDS_PATTERN = /(#{COMMANDS.keys.map { |c| Regexp.escape(c) }.join('|')})+/.freeze
+  COMMANDS_PATTERN = /(#{Formatting.available.map { |c| Regexp.escape(c) }.join('|')})+/.freeze
   DIRECTION_PATTERN = /(#{DIRECTIONS.map { |d| Regexp.escape(d) }.join('|')})/.freeze
 
   TAG_PATTERN = /((#{SLIDE_NUMBER_PATTERN})(#{COMMANDS_PATTERN})(#{DIRECTION_PATTERN}))/.freeze
@@ -32,7 +23,7 @@ class Parser
   end
 
   def parse
-    tag_item = TagItem.new nil, 0, [Command::Start], 0
+    tag_item = TagItem.new nil, 0, [Formatting.start], 0
 
     @lines = @text.split(/\n/)
     @lines.each_with_index do |line, line_number|
@@ -59,11 +50,11 @@ class Parser
       tag_item.add_child(create_text_item("\n")) unless @lines.last == line
     end
 	
-	unless tag_item.matching(0, [Command::Start])
+	unless tag_item.matching(0, [Formatting.start])
 		raise "#{@filename}: No end tag for slide #{tag_item.slide_number}, #{tag_item.command_type} in line #{tag_item.line_number}"
 	end
 	
-	return tag_item.max_slide_number, tag_item.formattable_texts([])
+	return tag_item.max_slide_number, tag_item.formattable_texts(Formattings.new)
   end
 
   private
@@ -97,6 +88,6 @@ class Parser
   end
 
   def tag_info_from_match match
-    return match[2].to_i, match[3].split('').map{|c| COMMANDS[c]}
+    return match[2].to_i, match[3].split('').map{|c| Formatting[c]}
   end
 end

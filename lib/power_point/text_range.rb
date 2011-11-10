@@ -28,6 +28,19 @@ module PowerPoint
       black!
 	end
 	
+	def background_color
+	  @shape.background_color
+	end
+	
+	def bold= value
+	  @text_range.Font.Bold = (value ? 1 : 0)
+	end
+	
+	def color= color
+	  @text_range.Font.Color.RGB = color.to_numeric
+	end
+	
+	# Old stuff
 	def font_family=(font_family)
 	  @text_range.Font.Name = font_family
 	end
