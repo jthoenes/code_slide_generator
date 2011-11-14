@@ -26,7 +26,7 @@ module PowerPoint
 	end
 	
 	def background_color
-	  RGB.from_numeric(@shape.Fill.ForeColor)
+	  RGB.from_rgb_value(@shape.Fill.ForeColor.RGB)
 	end
 	
 	def prepare!

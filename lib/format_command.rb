@@ -19,10 +19,6 @@ class Formatting
 	instance
   end
   
-  def create_formatting slide_number
-    Formatting.new(self, slide_number)
-  end
-  
   def add_at_slide_formats formats
     @at_slide_formats = @at_slide_formats + formats
   end
@@ -31,13 +27,18 @@ class Formatting
     @from_slide_formats = @from_slide_formats + formats
   end
   
-  attr_reader :at_slide_formats, :from_slide_formats
+  def add_until_slide_formats formats
+    @until_slide_formats = @until_slide_formats + formats
+  end
+  
+  attr_reader :at_slide_formats, :from_slide_formats, :until_slide_formats
   
   private
   def initialize(character)
     @character = character
     @at_slide_formats = []
 	@from_slide_formats = []
+	@until_slide_formats = []
   end
   
 end
@@ -59,7 +60,11 @@ class Formattings
   
   def relevant_formats slide_number
     formats = {}
-    formats_until_slide(slide_number) do |format|
+    formats_upto_slide(slide_number) do |format|
+	  # later slides formattings will override earlier ones
+	  formats[format.type] = format
+	end
+	formats_until_slide(slide_number) do |format|
 	  # later slides formattings will override earlier ones
 	  formats[format.type] = format
 	end
@@ -72,6 +77,16 @@ class Formattings
   end
   
   private
+  def formats_upto_slide(slide_number, &block)
+    return [] if slide_number+1 > @list.length
+	
+    @list[slide_number+1 .. @list.length].each do |formattings|
+	  formattings.each do |formatting|
+	    formatting.until_slide_formats.each(&block)
+      end unless formattings.nil?
+    end
+  end
+  
   def formats_until_slide(slide_number, &block)
     @list[0..slide_number].each do |formattings|
 	  formattings.each do |formatting|

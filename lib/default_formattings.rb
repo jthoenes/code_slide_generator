@@ -9,8 +9,6 @@ class FormattingParser
 	instance.commands
   end
   
-  attr_reader :commands
-  
   def initialize
     @commands = []
   end
@@ -24,6 +22,10 @@ class FormattingParser
 	  @commands << command
 	end
   end
+  
+  def commands
+    @commands
+  end
 end
 
 class ToggleFormatHandler
@@ -31,22 +33,29 @@ class ToggleFormatHandler
   def self.handle character_on, character_off, &block
     instance = new(character_on, character_off)
 	instance.instance_eval(&block)
+	instance.process_commands
 	instance.commands
   end
-  
-  attr_reader :commands
 
   def initialize(character_on, character_off)
     @character_on, @character_off = character_on, character_off
-	@commands = []
   end
   
   def on &block
-    FormatHandler.new(@character_on).instance_eval(&block)
+    @on_command = FormatHandler.handle(@character_on, &block)
   end
   
   def off &block
-    FormatHandler.new(@character_off).instance_eval(&block)
+    @off_command = FormatHandler.handle(@character_off, &block)
+  end
+  
+  def process_commands
+    @on_command.add_until_slide_formats(@off_command.from_slide_formats)
+	@off_command.add_until_slide_formats(@on_command.from_slide_formats)
+  end
+  
+  def commands
+    [@on_command, @off_command]
   end
 end
 
@@ -57,8 +66,6 @@ class FormatHandler
 	instance.instance_eval(&block)
 	instance.command
   end
-  
-  attr_reader :command
 
   def initialize(character)
     @command = Formatting.create(character)
@@ -72,6 +79,9 @@ class FormatHandler
     @command.add_from_slide_formats(FormatExtractor.extract(&block))
   end
   
+  def command
+    @command
+  end
 end
 
 class FormatExtractor
@@ -99,8 +109,8 @@ def formatting &block
   FormattingParser.handle(&block)
 end
 
-formatting do
-  
+
+formatting do 
   
   
   format 'b' do

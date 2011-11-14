@@ -37,7 +37,7 @@ module PowerPoint
 	end
 	
 	def color= color
-	  @text_range.Font.Color.RGB = color.to_numeric
+	  @text_range.Font.Color.RGB = color.to_rgb_value
 	end
 	
 	# Old stuff
