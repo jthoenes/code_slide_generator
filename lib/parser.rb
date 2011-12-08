@@ -22,20 +22,17 @@ class Parser
 
   OPEN = "["
   CLOSE = "]"
-  DIRECTIONS = [OPEN, CLOSE].freeze
-
-  SLIDE_NUMBER_PATTERN = /\d+/
+  DIRECTIONS = [OPEN, CLOSE].freeze  
   
   def tag_pattern
-    commands_pattern = /(#{Formatting.available.map { |c| Regexp.escape(c) }.join('|')})+/
     direction_pattern = /(#{DIRECTIONS.map { |d| Regexp.escape(d) }.join('|')})/
 
-    /((#{SLIDE_NUMBER_PATTERN})(#{commands_pattern})(#{direction_pattern}))/  
+    /((#{CommandNode.pattern})(#{direction_pattern}))/  
   end
 
   private
   def create_ast
-    command_node = CommandNode.new nil, 0, [Formatting.start], 0
+    command_node = RootNode.instance
 
     @lines = @text.split(/\n/)
     @lines.each_with_index do |line, line_number|
@@ -62,7 +59,7 @@ class Parser
       create_text_node(command_node, "\n") unless @lines.last == line
     end
 	
-	  unless command_node.matching(0, [Formatting.start])
+	  unless command_node == RootNode.instance
 		  raise "#{@filename}: No end tag for slide #{command_node.slide_number}, #{command_node.command_type} in line #{command_node.line_number}"
 	  end
     
@@ -70,11 +67,11 @@ class Parser
   end
   
   def is_open? match
-    match[5] == OPEN
+    direction_from_match(match) == OPEN
   end
 
   def is_close? match
-    match[5] == CLOSE
+    direction_from_match(match) == CLOSE
   end
 
   def create_text_node command_node, text
@@ -84,23 +81,25 @@ class Parser
   end
 
   def create_command_node parent, line_number, match
-    slide_number, commands = tag_info_from_match(match)
-    command_node = CommandNode.new(parent, slide_number, commands, line_number)
+    command_node = CommandNode.new(parent, command_from_match(match), line_number)
     parent.add_child(command_node)
 
     command_node
   end
 
   def close_node command_node, match
-    slide_number, commands = tag_info_from_match(match)
-    if command_node.matching(slide_number, commands)
+    if command_node.matching(command_from_match(match))
       return command_node.parent
     else
       raise "#{@filename}: No end tag for #{command_node.source} in line #{command_node.line_number}"
     end
   end
 
-  def tag_info_from_match match
-    return match[2].to_i, match[3].split('').map{|c| Formatting[c]}
+  def command_from_match match
+    match[2]
+  end
+  
+  def direction_from_match match
+    match[6]
   end
 end

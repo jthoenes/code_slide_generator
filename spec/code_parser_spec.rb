@@ -11,18 +11,15 @@ describe CodeParser do
     REFERENCE_EXAMPLE="/* 5-[ *//* 3b[ */ONE/* 3b]*//*5-] *//* 6-[ *//* 5+[ *//* 0-[ */TWO/* 0-] *//* 5+] *//* 6-] *//* 6+[ */THREE/* 6+] */"
     
     before(:all) do
-      @b_format = Formatting.create('b')
-      @plus_format = Formatting.create('+')
-      @minus_format = Formatting.create('-')
+      Formatting.create('b')
+      Formatting.create('+')
+      Formatting.create('-')
       
       @root = CodeParser.new("spec-non-file", REFERENCE_EXAMPLE).create_ast
     end
   
     it "root tag item" do
-      @root.parent.should be_nil
-      @root.line_number.should eql(0)
-      @root.formattings.should eql([Formatting.start])
-      @root.slide_number.should eql(0)
+      @root.should eql(RootNode.instance)
       @root.children.should have(3).items
     end
     
@@ -31,8 +28,7 @@ describe CodeParser do
       
       @tag.parent.should be(@root)
       @tag.line_number.should eql(1)
-      @tag.slide_number.should eql(5)
-      @tag.formattings.should eql([@minus_format])
+      @tag.command.should eql('5-')
       @tag.children.should have(1).item
     end
     
@@ -41,8 +37,7 @@ describe CodeParser do
       
       @tag.parent.should be(@root)
       @tag.line_number.should eql(1)
-      @tag.slide_number.should eql(6)
-      @tag.formattings.should eql([@minus_format])
+      @tag.command.should eql('6-')
       @tag.children.should have(1).item
     end
     
@@ -51,8 +46,7 @@ describe CodeParser do
       
       @tag.parent.should be(@root)
       @tag.line_number.should eql(1)
-      @tag.slide_number.should eql(6)
-      @tag.formattings.should eql([@plus_format])
+      @tag.command.should eql('6+')
       @tag.children.should have(1).item
     end
     
@@ -61,8 +55,7 @@ describe CodeParser do
       
       @tag.parent.should be(@root.children[0])
       @tag.line_number.should eql(1)
-      @tag.slide_number.should eql(3)
-      @tag.formattings.should eql([@b_format])
+      @tag.command.should eql('3b')
       @tag.children.should have(1).item
     end
     
@@ -71,8 +64,7 @@ describe CodeParser do
       
       @tag.parent.should be(@root.children[1])
       @tag.line_number.should eql(1)
-      @tag.slide_number.should eql(5)
-      @tag.formattings.should eql([@plus_format])
+      @tag.command.should eql('5+')
       @tag.children.should have(1).item
     end
     
@@ -81,8 +73,7 @@ describe CodeParser do
       
       @tag.parent.should be(@root.children[1].children[0])
       @tag.line_number.should eql(1)
-      @tag.slide_number.should eql(0)
-      @tag.formattings.should eql([@minus_format])
+      @tag.command.should eql('0-')
       @tag.children.should have(1).item
     end
     

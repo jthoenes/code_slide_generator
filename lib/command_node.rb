@@ -1,10 +1,15 @@
 class CommandNode
 
-  attr_reader :parent, :line_number, :children, :slide_number, :formattings
+  SLIDE_NUMBER_PATTERN = /\d+/
+  def self.pattern
+    /(#{SLIDE_NUMBER_PATTERN})((#{Formatting.pattern})+)/
+  end
 
-  def initialize parent, slide_number, formattings, line_number
-    @parent, @slide_number, @line_number = parent, slide_number, line_number
-	  @formattings = formattings
+  attr_reader :parent, :line_number, :children, :command, :slide_number, :formattings
+
+  def initialize parent, command, line_number
+    @parent, @command, @line_number = parent, command, line_number
+    @slide_number, @formattings = parse_command(command)
     @children = []
   end
 
@@ -12,8 +17,8 @@ class CommandNode
     @children << child
   end
 
-  def matching slide_number, formattings
-    slide_number == @slide_number and @formattings == formattings
+  def matching command
+    @command == command
   end
 
   def max_slide_number
@@ -26,9 +31,7 @@ class CommandNode
   end
   
   # Reporting
-  def source
-    "#{@slide_number}#{@formattings.map(&:character).join}"
-  end
+  alias :souce :command
   
   def print_tree
     puts "line #{@line_number}: #{source} => {#{@children.map(&:source).join(',')}}"
@@ -36,7 +39,23 @@ class CommandNode
   end
   
   def inspect
-    "TagItem<line:#{@line_number},#{@formattings.inspect},children:#{@children.inspect}>"
+    "Code<line:#{@line_number},command:#{@command},children:#{@children.inspect}>"
   end
+  
+  private
+  def parse_command command
+    matchdata = CommandNode.pattern.match(command)
+    raise "Parse Error in Parsing Command '#{command}'" if matchdata.nil?    
+    return matchdata[1].to_i, matchdata[2].chars.map{|c| Formatting[c]}
+  end
+end
 
+class RootNode < CommandNode
+  include Singleton
+  
+  def initialize
+    @parent, @command, @line_number = nil, '~~ROOT~~', 0
+    @slide_number, @formattings = 0, [Formatting.start]
+    @children = []
+  end
 end

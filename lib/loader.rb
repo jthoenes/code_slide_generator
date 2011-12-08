@@ -1,5 +1,7 @@
 require 'win32ole'
 require 'open-uri'
+require 'singleton'
+
 require 'rubygems'
 require 'trollop'
 

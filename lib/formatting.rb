@@ -19,6 +19,10 @@ class Formatting
 	  instance
   end
   
+  def self.pattern
+    /#{available.map{ |c| Regexp.escape(c) }.join('|')}/
+  end
+  
   def add_at_slide_formats formats
     @at_slide_formats = @at_slide_formats + formats
   end
