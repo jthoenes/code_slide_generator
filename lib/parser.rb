@@ -2,16 +2,6 @@ class Parser
 
   TAB_WIDTH = 2
 
-  OPEN = "["
-  CLOSE = "]"
-  DIRECTIONS = [OPEN, CLOSE].freeze
-
-  SLIDE_NUMBER_PATTERN = /\d+/
-  COMMANDS_PATTERN = /(#{Formatting.available.map { |c| Regexp.escape(c) }.join('|')})+/.freeze
-  DIRECTION_PATTERN = /(#{DIRECTIONS.map { |d| Regexp.escape(d) }.join('|')})/.freeze
-
-  TAG_PATTERN = /((#{SLIDE_NUMBER_PATTERN})(#{COMMANDS_PATTERN})(#{DIRECTION_PATTERN}))/.freeze
-
 
   def initialize filename, text
     @filename = filename
@@ -56,6 +46,21 @@ class Parser
 	
 	return tag_item.max_slide_number, tag_item.formattable_texts(Formattings.new)
   end
+  
+  protected
+
+  OPEN = "["
+  CLOSE = "]"
+  DIRECTIONS = [OPEN, CLOSE].freeze
+
+  SLIDE_NUMBER_PATTERN = /\d+/
+  
+  def tag_pattern
+    commands_pattern = /(#{Formatting.available.map { |c| Regexp.escape(c) }.join('|')})+/
+    direction_pattern = /(#{DIRECTIONS.map { |d| Regexp.escape(d) }.join('|')})/
+
+    /((#{SLIDE_NUMBER_PATTERN})(#{commands_pattern})(#{direction_pattern}))/  
+  end
 
   private
   def is_open? match
@@ -83,7 +88,7 @@ class Parser
     if tag_item.matching(slide_number, commands)
       return tag_item.parent
     else
-      raise "#{@filename}: No end tag for slide #{tag_item.slide_number}, #{tag_item.command_types} in line #{tag_item.line_number}"
+      raise "#{@filename}: No end tag for #{tag_item.source} in line #{tag_item.line_number}"
     end
   end
 

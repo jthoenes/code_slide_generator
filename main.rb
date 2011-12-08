@@ -4,7 +4,16 @@ require 'open-uri'
 require 'rubygems'
 require 'trollop'
 
-require 'lib/default_formattings'
+require 'lib/formatting_dsl/module'
+require 'lib/formatting_dsl/format_extractor'
+require 'lib/formatting_dsl/format_handler'
+require 'lib/formatting_dsl/toggle_format_handler'
+require 'lib/formatting_dsl/formatting_handler'
+
+require 'lib/rgb'
+require 'lib/format'
+require 'lib/formatting'
+require 'lib/formattings'
 
 require 'lib/parser'
 require 'lib/code_parser'
@@ -35,11 +44,15 @@ EOS
   opt :all, "generate all slides", :default => false
   opt :slide, "slide Number which should be (re-)generated", :type => :int
   opt :path, "base path for the slides", :type => :string, :default => ""
+  opt :formattings, "custom DSL file for the formatting commands", :type => :string, :default => "#{File.dirname($0)}/lib/default_formattings.rb"
 end
 
 Trollop::die :slide, "please provide a --slide or use --all" unless opts[:all] || opts[:slide]
 Trollop::die :slide, "must be a positive integer" unless opts[:slide].nil? || opts[:slide] > 0
 Trollop::die :path, "must be a valid path to a directoy" unless opts[:path].length == 0 || File.directory?(opts[:path])
+Trollop::die :path, "must be a valid path to a file" unless opts[:formattings].length == 0 || File.exists?(opts[:formattings])
+
+FormattingDSL.module_eval(File.read(opts[:formattings]))
 
 power_point = PowerPoint::Application.new
 presentation = power_point.current_presentation
