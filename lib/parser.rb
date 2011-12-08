@@ -22,12 +22,12 @@ class Parser
       loop do
         match = tag_pattern.match(work_line)
         if match.nil?
-			tag_item.add_child(create_text_item(work_line))
+			create_text_item(tag_item, work_line)
 			break
 		end
         work_line = match.post_match
 		
-		tag_item.add_child(create_text_item(match.pre_match))
+		   create_text_item(tag_item, match.pre_match)
 
         if is_open? match
 		   tag_item = create_tag_item(tag_item, line_number, match)
@@ -37,14 +37,16 @@ class Parser
           raise "Invalid tag in line #{line_number}"
         end
       end
-      tag_item.add_child(create_text_item("\n")) unless @lines.last == line
+      create_text_item(tag_item, "\n") unless @lines.last == line
     end
 	
-	unless tag_item.matching(0, [Formatting.start])
-		raise "#{@filename}: No end tag for slide #{tag_item.slide_number}, #{tag_item.command_type} in line #{tag_item.line_number}"
-	end
+	  unless tag_item.matching(0, [Formatting.start])
+		  raise "#{@filename}: No end tag for slide #{tag_item.slide_number}, #{tag_item.command_type} in line #{tag_item.line_number}"
+	  end
 	
-	return tag_item.max_slide_number, tag_item.formattable_texts(Formattings.new)
+    tag_item.print_tree
+  
+	  return tag_item.max_slide_number, tag_item.formattable_texts(Formattings.new)
   end
   
   protected
@@ -71,8 +73,10 @@ class Parser
     match[5] == CLOSE
   end
 
-  def create_text_item text
-    TextItem.new text
+  def create_text_item tag_item, text
+    unless text.nil? or text.empty?
+      tag_item.add_child(TextItem.new(text))
+    end
   end
 
   def create_tag_item parent, line_number, match

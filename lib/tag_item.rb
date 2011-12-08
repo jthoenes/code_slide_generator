@@ -30,6 +30,11 @@ class TagItem
     "#{@slide_number}#{@formattings.map(&:character).join}"
   end
   
+  def print_tree
+    puts "line #{@line_number}: #{source} => {#{@children.map(&:source).join(',')}}"
+    @children.each(&:print_tree)
+  end
+  
   def inspect
     "TagItem<line:#{@line_number},#{@formattings.inspect},children:#{@children.inspect}>"
   end
