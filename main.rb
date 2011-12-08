@@ -1,34 +1,5 @@
 $:.unshift File.dirname($0)
-require 'win32ole'
-require 'open-uri'
-require 'rubygems'
-require 'trollop'
-
-require 'lib/formatting_dsl/module'
-require 'lib/formatting_dsl/format_extractor'
-require 'lib/formatting_dsl/format_handler'
-require 'lib/formatting_dsl/toggle_format_handler'
-require 'lib/formatting_dsl/formatting_handler'
-
-require 'lib/rgb'
-require 'lib/format'
-require 'lib/formatting'
-require 'lib/formattings'
-
-require 'lib/parser'
-require 'lib/code_parser'
-require 'lib/xml_parser'
-require 'lib/tag_item'
-require 'lib/text_item'
-require 'lib/formattable_text'
-require 'lib/shape_formatter'
-
-require 'lib/power_point'
-require 'lib/power_point/application'
-require 'lib/power_point/presentation'
-require 'lib/power_point/slide'
-require 'lib/power_point/shape'
-require 'lib/power_point/text_range'
+require 'lib/loader'
 
 opts = Trollop::options do
   version "Code Slide Generation 0.1.0 (c) 2011 Johannes Thoenes <johannes.thoenes@cgm.com>"

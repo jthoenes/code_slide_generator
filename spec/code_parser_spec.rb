@@ -1,15 +1,5 @@
-require 'lib/rgb'
-require 'lib/format'
-require 'lib/formatting'
-require 'lib/formattings'
-
-require 'lib/parser'
-require 'lib/code_parser'
-require 'lib/xml_parser'
-require 'lib/tag_item'
-require 'lib/text_item'
-require 'lib/formattable_text'
-require 'lib/shape_formatter'
+$:.unshift File.dirname($0) + '/..'
+require 'lib/loader'
 
 class Parser
   public :create_ast
