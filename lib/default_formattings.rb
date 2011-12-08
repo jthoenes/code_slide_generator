@@ -28,11 +28,11 @@ formattings do
   toggle_formats '+', '-' do
     on do
       from_slide { undelete }
-	  at_slide { bold }
-	end
-	off do
+	    at_slide { bold }
+	  end
+	  off do
       from_slide { delete }
-	end
+	  end
   end  
   
 end
