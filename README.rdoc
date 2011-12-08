@@ -1,4 +1,6 @@
-﻿== PowerPoint Code Slide Generator
+
+
+= PowerPoint Code Slide Generator
 
 === Description and Usage
 
