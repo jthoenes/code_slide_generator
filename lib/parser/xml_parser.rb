@@ -1,4 +1,4 @@
-class XMLParser < Parser
+class XMLParser < BaseParser
   def pre_pattern
     /#{Regexp.escape('<!--')}/
   end

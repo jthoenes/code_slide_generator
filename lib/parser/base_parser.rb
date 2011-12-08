@@ -1,4 +1,4 @@
-class Parser
+class BaseParser
 
   TAB_WIDTH = 2
 

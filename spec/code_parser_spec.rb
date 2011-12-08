@@ -1,10 +1,6 @@
 $:.unshift File.dirname($0) + '/..'
 require 'lib/loader'
 
-class Parser
-  public :create_ast
-end
-
 describe CodeParser do 
   
   describe "reference example" do
@@ -15,7 +11,7 @@ describe CodeParser do
       Formatting.create('+')
       Formatting.create('-')
       
-      @root = CodeParser.new("spec-non-file", REFERENCE_EXAMPLE).create_ast
+      @root = CodeParser.new("spec-non-file", REFERENCE_EXAMPLE).send(:create_ast)
     end
     
     after(:all) do

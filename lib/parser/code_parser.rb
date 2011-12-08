@@ -1,4 +1,4 @@
-class CodeParser < Parser
+class CodeParser < BaseParser
   def pre_pattern
     /#{Regexp.escape('/*')}/
   end
