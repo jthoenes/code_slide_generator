@@ -4,10 +4,14 @@ require 'lib/loader'
 describe CommandNode do
 
   before(:all) do
-      @b_f = Formatting.create('b')
-      @plus_f = Formatting.create('+')
-      @minus_f = Formatting.create('-')
-    end
+    @b_f = Formatting.create('b')
+    @plus_f = Formatting.create('+')
+    @minus_f = Formatting.create('-')
+  end
+    
+  after(:all) do
+    Formatting.instance_variable_set('@registry', {})
+  end
     
   describe "basic initialization" do
   

@@ -23,6 +23,8 @@ require 'lib/command_node'
 require 'lib/text_node'
 require 'lib/formattable_text'
 require 'lib/shape_formatter'
+require 'lib/tag_matcher'
+require 'lib/tag_match'
 
 require 'lib/power_point'
 require 'lib/power_point/application'

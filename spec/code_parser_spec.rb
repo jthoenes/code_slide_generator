@@ -17,6 +17,10 @@ describe CodeParser do
       
       @root = CodeParser.new("spec-non-file", REFERENCE_EXAMPLE).create_ast
     end
+    
+    after(:all) do
+      Formatting.instance_variable_set('@registry', {})
+    end
   
     it "root tag item" do
       @root.should eql(RootNode.instance)

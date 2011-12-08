@@ -1,5 +1,9 @@
 class XMLParser < Parser
-  def tag_pattern
-    /#{Regexp.escape('<!--')}\s*#{super}\s*#{Regexp.escape('-->')}/
+  def pre_pattern
+    /#{Regexp.escape('<!--')}/
+  end
+  
+  def post_pattern
+    /#{Regexp.escape('-->')}/
   end
 end
