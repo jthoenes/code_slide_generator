@@ -13,9 +13,9 @@ class Parser
   end
 
   def parse
-    root_tag_item = create_ast 
+    root_node = create_ast 
   
-	  return root_tag_item.max_slide_number, root_tag_item.formattable_texts(Formattings.new)
+	  return root_node.max_slide_number, root_node.formattable_texts(Formattings.new)
   end
   
   protected
@@ -35,7 +35,7 @@ class Parser
 
   private
   def create_ast
-    tag_item = TagItem.new nil, 0, [Formatting.start], 0
+    command_node = CommandNode.new nil, 0, [Formatting.start], 0
 
     @lines = @text.split(/\n/)
     @lines.each_with_index do |line, line_number|
@@ -44,29 +44,29 @@ class Parser
       loop do
         match = tag_pattern.match(work_line)
         if match.nil?
-			create_text_item(tag_item, work_line)
+			create_text_node(command_node, work_line)
 			break
 		end
         work_line = match.post_match
 		
-		   create_text_item(tag_item, match.pre_match)
+		   create_text_node(command_node, match.pre_match)
 
         if is_open? match
-		   tag_item = create_tag_item(tag_item, line_number, match)
+		   command_node = create_command_node(command_node, line_number, match)
         elsif is_close? match
-		   tag_item = close_tag(tag_item, match)
+		   command_node = close_node(command_node, match)
         else
           raise "Invalid tag in line #{line_number}"
         end
       end
-      create_text_item(tag_item, "\n") unless @lines.last == line
+      create_text_node(command_node, "\n") unless @lines.last == line
     end
 	
-	  unless tag_item.matching(0, [Formatting.start])
-		  raise "#{@filename}: No end tag for slide #{tag_item.slide_number}, #{tag_item.command_type} in line #{tag_item.line_number}"
+	  unless command_node.matching(0, [Formatting.start])
+		  raise "#{@filename}: No end tag for slide #{command_node.slide_number}, #{command_node.command_type} in line #{command_node.line_number}"
 	  end
     
-    tag_item
+    command_node
   end
   
   def is_open? match
@@ -77,26 +77,26 @@ class Parser
     match[5] == CLOSE
   end
 
-  def create_text_item tag_item, text
+  def create_text_node command_node, text
     unless text.nil? or text.empty?
-      tag_item.add_child(TextItem.new(text))
+      command_node.add_child(TextNode.new(text))
     end
   end
 
-  def create_tag_item parent, line_number, match
+  def create_command_node parent, line_number, match
     slide_number, commands = tag_info_from_match(match)
-    tag_item = TagItem.new(parent, slide_number, commands, line_number)
-    parent.add_child(tag_item)
+    command_node = CommandNode.new(parent, slide_number, commands, line_number)
+    parent.add_child(command_node)
 
-    tag_item
+    command_node
   end
 
-  def close_tag tag_item, match
+  def close_node command_node, match
     slide_number, commands = tag_info_from_match(match)
-    if tag_item.matching(slide_number, commands)
-      return tag_item.parent
+    if command_node.matching(slide_number, commands)
+      return command_node.parent
     else
-      raise "#{@filename}: No end tag for #{tag_item.source} in line #{tag_item.line_number}"
+      raise "#{@filename}: No end tag for #{command_node.source} in line #{command_node.line_number}"
     end
   end
 

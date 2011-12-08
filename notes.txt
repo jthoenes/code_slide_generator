@@ -1,1 +1,2 @@
 command => '3r+'
+tag (better term!) => '/* 3r+ */'

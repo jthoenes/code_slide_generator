@@ -1,4 +1,4 @@
-class TagItem
+class CommandNode
 
   attr_reader :parent, :line_number, :children, :slide_number, :formattings
 

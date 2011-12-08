@@ -1,4 +1,4 @@
-class TextItem
+class TextNode
 
   attr_reader :text
 
