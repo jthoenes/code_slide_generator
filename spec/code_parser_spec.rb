@@ -19,7 +19,7 @@ describe CodeParser do
     end
   
     it "root tag item" do
-      @root.should eql(RootNode.instance)
+      @root.should be_root
       @root.children.should have(3).items
     end
     

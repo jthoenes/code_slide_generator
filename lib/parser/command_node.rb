@@ -26,12 +26,16 @@ class CommandNode
   end
 
 
-  def formattable_texts formattings
-    @children.map{|item| item.formattable_texts(formattings.including(slide_number, @formattings))}.flatten
+  def to_formattable_texts formattings = Formattings.new
+    @children.map{|item| item.to_formattable_texts(formattings.including(slide_number, @formattings))}.flatten
+  end
+  
+  def root?
+    false
   end
   
   # Reporting
-  alias :souce :command
+  alias :source :command
   
   def print_tree
     puts "line #{@line_number}: #{source} => {#{@children.map(&:source).join(',')}}"
@@ -51,11 +55,14 @@ class CommandNode
 end
 
 class RootNode < CommandNode
-  include Singleton
   
   def initialize
     @parent, @command, @line_number = nil, '~~ROOT~~', 0
     @slide_number, @formattings = 0, [Formatting.start]
     @children = []
+  end
+  
+  def root?
+    true
   end
 end

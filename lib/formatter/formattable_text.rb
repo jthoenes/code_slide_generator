@@ -1,7 +1,5 @@
 class FormattableText
 
-  attr_accessor :text
-
   def initialize text, formattings
     @text, @formattings = text, formattings
   end

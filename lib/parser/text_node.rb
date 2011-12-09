@@ -6,8 +6,8 @@ class TextNode
     @text = text
   end
 
-  def formattable_texts commands
-    [FormattableText.new(text, commands)]
+  def to_formattable_texts formattings
+    [FormattableText.new(text, formattings)]
   end
 
    def max_slide_number

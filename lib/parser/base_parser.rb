@@ -9,14 +9,14 @@ class BaseParser
   end
 
   def parse
-    command_node = RootNode.instance
+    command_node = RootNode.new
 
     lines = @text.split(/\n/)
     lines.each_with_index do |line, index|
       command_node = parse_line(command_node, line, index + 1, lines.last == line)
     end
   
-    unless command_node == RootNode.instance
+    unless command_node.root?
       raise "#{@filename}: No end tag for slide #{command_node.slide_number}, #{command_node.command_type} in line #{command_node.line_number}"
     end
     
