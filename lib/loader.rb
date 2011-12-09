@@ -24,8 +24,8 @@ require 'lib/parser/text_node'
 require 'lib/parser/tag_matcher'
 require 'lib/parser/tag_match'
 
-require 'lib/shape_formatter'
-require 'lib/formattable_text'
+require 'lib/formatter/shape_formatter'
+require 'lib/formatter/formattable_text'
 
 require 'lib/power_point'
 require 'lib/power_point/application'

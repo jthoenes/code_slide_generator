@@ -11,7 +11,7 @@ describe CodeParser do
       Formatting.create('+')
       Formatting.create('-')
       
-      @root = CodeParser.new("spec-non-file", REFERENCE_EXAMPLE).send(:create_ast)
+      @root = CodeParser.new("spec-non-file", REFERENCE_EXAMPLE).parse
     end
     
     after(:all) do

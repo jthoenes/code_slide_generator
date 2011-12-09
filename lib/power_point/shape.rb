@@ -50,9 +50,10 @@ module PowerPoint
 	
 	  text = read_text(filepath)	
 	  parser = create_parser(filepath, text)
-		
-	  max_slide_number, formattable_texts = parser.parse
-		
+      root_node = parser.parse
+      
+	  max_slide_number, formattable_texts = root_node.max_slide_number, root_node.formattable_texts(Formattings.new)
+      
 	  slide_range = calculate_range(max_slide_number)
 	  
 	  ShapeFormatter.new(self, formattable_texts, slide_range)

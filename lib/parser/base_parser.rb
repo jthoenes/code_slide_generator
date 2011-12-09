@@ -9,17 +9,6 @@ class BaseParser
   end
 
   def parse
-    root_node = create_ast
-    
-    return root_node.max_slide_number, root_node.formattable_texts(Formattings.new)
-  end
-
-  private
-  def clean_up_text text
-    text.gsub(/\r+\n/, "\n").gsub(/\t/, " "*TAB_WIDTH)
-  end
-  
-  def create_ast
     command_node = RootNode.instance
 
     lines = @text.split(/\n/)
@@ -32,6 +21,11 @@ class BaseParser
     end
     
     command_node
+  end
+
+  private
+  def clean_up_text text
+    text.gsub(/\r+\n/, "\n").gsub(/\t/, " "*TAB_WIDTH)
   end
   
   def parse_line command_node, line, line_number, last_line
