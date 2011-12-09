@@ -39,77 +39,18 @@ module PowerPoint
   end
   
   class Shape
-    INCLUDE_COMMAND = "INCLUDE_SOURCE".freeze
-	
     def code_shape?
-	  text_field? and text.strip =~ /#{INCLUDE_COMMAND}=(.+)$/
+	  get_formatter.code_shape?
 	end
+    
+    def formatter(basepath)
+      get_formatter.parse(basepath)
+      get_formatter
+    end
 	
-	def formatter(basepath)
-	  filepath = code_filepath(basepath)
-	
-	  text = read_text(filepath)	
-	  parser = create_parser(filepath, text)
-      root_node = parser.parse
-      
-	  max_slide_number, formattable_texts = root_node.max_slide_number, root_node.formattable_texts(Formattings.new)
-      
-	  slide_range = calculate_range(max_slide_number)
-	  
-	  ShapeFormatter.new(self, formattable_texts, slide_range)
-	end
-	
-	def code_filepath basepath = ""  
-      File.join(basepath, code_shape_match[1])
-	end
-	
-	def calculate_range max_slide_number
-	  range_string = code_shape_match[3]
-	  if range_string.nil?
-		0..max_slide_number
-	  elsif range_string =~ /^(\d+)-$/
-		$1.to_i..max_slide_number
-	  elsif range_string =~ /^-(\d+)$/
-		0..$1.to_i
-	  elsif range_string =~ /^(\d+)-(\d+)$/
-		$1.to_i..$2.to_i
-	  elsif range_string =~ /^\d+$/
-		$&.to_i..$&.to_i
-	  else
-		raise "Error interpreting #{range_string}"
-	  end
-	end
-	
-	private
-	def code_shape_match
-	  raise "Not a code shape" unless code_shape?
-	  
-	  filename_pattern = /.+?/
-	  numbers_pattern = /\[(\d+|\d+-|-\d+|\d+-\d+)\]/
-      pattern = /#{INCLUDE_COMMAND}=(#{filename_pattern})(#{numbers_pattern})?$/
-	  
-	  pattern.match(text.strip)
-	end
-	public
-	def read_text filepath
-	  text = ""
-	  begin
-		open(filepath) {|f| f.each_line {|line| text += line }}
-		text
-	  rescue
-		raise "Cannot read Input Source '#{filepath}' from Slide #{slide.number}"
-	  end
-	end
-
-	def create_parser filepath, text
-	  case (filepath.split('.').last)
-		when 'as', 'java', 'cs'
-		  CodeParser.new(filepath, text)
-		when 'xml'
-		  XMLParser.new(filepath, text)
-		else
-		  raise "Not valid file format for #{filepath}"
-		end
+    private
+	def get_formatter
+	  @formatter ||= ShapeFormatter.new(self)
 	end
 	
   end
