@@ -6,8 +6,8 @@ class FormattableText
   
   def apply slide_number, slide, shape
     if on_slide?(slide_number)
-      unless text.empty?
-	    text_range = shape.add_text(text)
+      unless @text.empty?
+	    text_range = shape.add_text(@text)
 		text_range.reset_format!
 	    formattings_for_slide(slide_number, text_range)
 	  end

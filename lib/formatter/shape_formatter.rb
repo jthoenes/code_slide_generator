@@ -15,7 +15,7 @@ class ShapeFormatter
     root_node = parser.parse
       
 	@slide_numbers = calculate_slide_numbers(root_node.max_slide_number)
-    @formattable_texts = root_node.formattable_texts(Formattings.new)
+    @formattable_texts = root_node.to_formattable_texts(Formattings.new)
   end
   
   def format index, slide
